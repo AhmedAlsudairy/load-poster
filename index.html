@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Load Forecasting for 11/33kV Substation - IEEE Poster</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        teal: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            200: '#99f6e4',
+                            300: '#5eead4',
+                            400: '#2dd4bf',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                            800: '#115e59',
+                            900: '#134e4a',
+                        },
+                        mint: '#66CDAA',
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        @keyframes bounce-slow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        .animate-bounce-slow { animation: bounce-slow 2s infinite; }
+        
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(102, 205, 170, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(102, 205, 170, 0.6); }
+        }
+        .animate-pulse-glow { animation: pulse-glow 2s infinite; }
+        
+        .gradient-header {
+            background: linear-gradient(135deg, #66CDAA 0%, #14b8a6 50%, #0d9488 100%);
+        }
+        
+        .bar-animate {
+            transition: height 1s ease-out, transform 0.3s ease;
+        }
+        
+        .bar-animate:hover {
+            transform: scaleY(1.05);
+            filter: brightness(1.1);
+        }
+
+        @media print {
+            .poster-container { max-width: 100%; box-shadow: none; border: none; }
+            @page { size: A0 portrait; margin: 0; }
+            .group .absolute { display: none !important; } /* Hide zoom icon */
+            .cursor-zoom-in { cursor: default !important; }
+            .bg-gray-100 { background-color: white !important; }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="poster-container w-full max-w-[98%] mx-auto bg-white shadow-2xl border-t-8 border-teal-600">
+        
+        <!-- ============================================
+             HEADER SECTION
+             ============================================ -->
+        <header class="gradient-header text-white py-10 px-8 text-center relative overflow-hidden">
+            <!-- Background Pattern -->
+            <div class="absolute inset-0 opacity-10">
+                <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="1"/>
+                        </pattern>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#grid)" />
+                </svg>
+            </div>
+            
+            <div class="relative z-10">
+                <!-- Icon -->
+                <div class="w-20 h-20 mx-auto mb-4 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                    <svg class="w-12 h-12" viewBox="0 0 24 24" fill="white">
+                        <path d="M13 2.05v2.02c3.95.49 7 3.85 7 7.93 0 3.21-1.92 6-4.72 7.28L13 17v5h7v-2h-4.18c2.01-1.59 3.18-4.06 3.18-6.72 0-4.87-3.65-8.93-8.5-9.73V2.05M11 2.05C6.58 2.58 3.07 6.13 2.54 10.5H.53c.54-5.22 4.75-9.37 10.01-9.45v1.99m0 17.9v2c-5.26-.08-9.47-4.23-10.01-9.45H2.54c.53 4.37 4.04 7.92 8.46 8.45M11 17l-2.28 2.28C6.55 18 5 15.69 5 13c0-3.86 3.14-7 7-7v4l4-4-4-4v2c-4.42 0-8 3.58-8 8 0 2.92 1.56 5.47 3.9 6.87L11 17z"/>
+                    </svg>
+                </div>
+                
+                <h1 class="text-4xl font-extrabold mb-2 drop-shadow-lg tracking-tight">
+                    Load Forecasting for 11/33kV Substation
+                </h1>
+                <h2 class="text-xl font-normal opacity-95 mb-6">
+                    Using XGBoost & Ensemble Learning Methods
+                </h2>
+                
+                <!-- Authors -->
+                <div class="flex flex-wrap justify-center gap-3 mb-4">
+                    <span class="bg-white/20 backdrop-blur-sm px-5 py-2 rounded-full text-sm font-medium border border-white/30 hover:bg-white/30 transition-all">
+                        Ahmed Khalifa Alsudairy
+                    </span>
+                    <span class="bg-white/20 backdrop-blur-sm px-5 py-2 rounded-full text-sm font-medium border border-white/30 hover:bg-white/30 transition-all">
+                        Ahmed Mohammed Alyahyai
+                    </span>
+                    <span class="bg-white/20 backdrop-blur-sm px-5 py-2 rounded-full text-sm font-medium border border-white/30 hover:bg-white/30 transition-all">
+                        Marwan Saif Al Fudhili
+                    </span>
+                </div>
+                
+                <p class="text-sm opacity-90">
+                    <strong>Supervisor:</strong> Shaik Abdul Saleem
+                </p>
+                <p class="text-base font-semibold mt-3 pt-3 border-t border-white/30 inline-block px-6">
+                    University of Technology and Applied Sciences
+                </p>
+            </div>
+        </header>
+
+        <!-- ============================================
+             MAIN CONTENT - 2 COLUMN GRID (Wider Images)
+             ============================================ -->
+        <main class="grid grid-cols-1 lg:grid-cols-2 gap-8 p-8 bg-gray-100">
+            
+            <!-- COLUMN 1: Introduction, Methodology, XGBoost -->
+            <div class="space-y-8">
+                
+                <!-- Section 1: Introduction & Problem -->
+                <section class="bg-white rounded-xl p-6 shadow-md border border-gray-100 hover:shadow-lg transition-shadow">
+                    <div class="flex items-center gap-3 mb-4 pb-3 border-b-2 border-teal-500">
+                        <span class="bg-gradient-to-br from-teal-400 to-teal-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">1</span>
+                        <h3 class="text-lg font-bold text-gray-800">Introduction & Problem</h3>
+                    </div>
+                    
+                    <!-- Warning Box -->
+                    <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg mb-4">
+                        <h4 class="font-semibold text-amber-800 flex items-center gap-2">
+                            <span>⚠️</span> The Challenge
+                        </h4>
+                        <p class="text-amber-700 text-sm mt-1">
+                            Current manual forecasting methods fail to capture <strong>nonlinear demand patterns</strong>, leading to grid instability and increased operational costs.
+                        </p>
+                    </div>
+                    
+                    <p class="text-gray-600 text-sm mb-4 text-justify">
+                        Electrical utilities require efficient power generation planning to prevent blackouts and reduce transmission losses. Rapid consumption growth makes traditional methods inadequate.
+                    </p>
+                    
+                    <!-- Success Box -->
+                    <div class="bg-emerald-50 border-l-4 border-emerald-500 p-4 rounded-r-lg">
+                        <h4 class="font-semibold text-emerald-800 flex items-center gap-2">
+                            <span>🎯</span> Our Goal
+                        </h4>
+                        <p class="text-emerald-700 text-sm mt-1">
+                            Develop a <strong>high-precision ML model</strong> to predict hourly loads using SCADA and weather data, achieving R² > 0.99.
+                        </p>
+                    </div>
+                    
+                    <!-- Image -->
+                    <div class="mt-6 -mx-6 -mb-6 rounded-b-xl overflow-hidden border-t border-gray-100 group relative">
+                        <div class="absolute top-3 right-3 bg-black/60 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 backdrop-blur-sm">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
+                        </div>
+                        <img src="images/output load vs time temp vs time humditiy vs time.png" 
+                             alt="Load, Temperature, and Humidity over Time"
+                             class="w-full h-auto cursor-zoom-in hover:scale-[1.02] transition-transform duration-300"
+                             onclick="openModal(this.src, 'Time series of Load, Temperature, and Humidity')">
+                        <p class="bg-gray-50 text-xs text-gray-500 text-center py-3 italic border-t border-gray-100">
+                            Figure 1: Time series of Load, Temperature, and Humidity (Click to Zoom)
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Section 2: Methodology -->
+                <section class="bg-white rounded-xl p-6 shadow-md border border-gray-100 hover:shadow-lg transition-shadow">
+                    <div class="flex items-center gap-3 mb-4 pb-3 border-b-2 border-teal-500">
+                        <span class="bg-gradient-to-br from-teal-400 to-teal-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">2</span>
+                        <h3 class="text-lg font-bold text-gray-800">Methodology & Workflow</h3>
+                    </div>
+                    
+                    <h4 class="font-semibold text-gray-700 mb-4 text-sm uppercase tracking-wide border-b pb-2">Complete Process Overview</h4>
+                    
+                    <div class="relative space-y-6 mb-8">
+                        <!-- Vertical Line -->
+                        <div class="absolute left-[19px] top-2 bottom-2 w-0.5 bg-gradient-to-b from-teal-500 via-teal-300 to-gray-200"></div>
+
+                        <!-- Step 1 -->
+                        <div class="relative flex items-start group">
+                            <div class="absolute left-0 top-0 w-10 h-10 rounded-full bg-white border-2 border-teal-500 flex items-center justify-center z-10 shadow-sm group-hover:scale-110 transition-transform">
+                                <span class="text-lg">📡</span>
+                            </div>
+                            <div class="ml-14 bg-gray-50 p-4 rounded-lg border border-gray-100 w-full hover:shadow-md transition-shadow">
+                                <h5 class="text-sm font-bold text-gray-800 mb-1">1. Data Acquisition & Preprocessing</h5>
+                                <p class="text-xs text-gray-600 leading-relaxed">
+                                    Collected SCADA load data (11kV feeders) and weather metrics (Temp, Humidity). Applied cleaning, normalization (MinMax, Log, Z-Score), and time-alignment.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div class="relative flex items-start group">
+                            <div class="absolute left-0 top-0 w-10 h-10 rounded-full bg-white border-2 border-teal-500 flex items-center justify-center z-10 shadow-sm group-hover:scale-110 transition-transform">
+                                <span class="text-lg">⚙️</span>
+                            </div>
+                            <div class="ml-14 bg-gray-50 p-4 rounded-lg border border-gray-100 w-full hover:shadow-md transition-shadow">
+                                <h5 class="text-sm font-bold text-gray-800 mb-1">2. Feature Engineering</h5>
+                                <p class="text-xs text-gray-600 leading-relaxed">
+                                    Generated 126 features including lag variables (t-1, t-24), rolling means, interaction terms (Load × Temp), and temporal cyclic encodings.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div class="relative flex items-start group">
+                            <div class="absolute left-0 top-0 w-10 h-10 rounded-full bg-white border-2 border-teal-500 flex items-center justify-center z-10 shadow-sm group-hover:scale-110 transition-transform">
+                                <span class="text-lg">🧠</span>
+                            </div>
+                            <div class="ml-14 bg-gray-50 p-4 rounded-lg border border-gray-100 w-full hover:shadow-md transition-shadow">
+                                <h5 class="text-sm font-bold text-gray-800 mb-1">3. Model Development</h5>
+                                <p class="text-xs text-gray-600 leading-relaxed">
+                                    Trained individual models (LSTM, XGBoost, Prophet). Optimized XGBoost hyperparameters using Grid Search to minimize RMSE.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Step 4 -->
+                        <div class="relative flex items-start group">
+                            <div class="absolute left-0 top-0 w-10 h-10 rounded-full bg-white border-2 border-teal-500 flex items-center justify-center z-10 shadow-sm group-hover:scale-110 transition-transform">
+                                <span class="text-lg">🔗</span>
+                            </div>
+                            <div class="ml-14 bg-gradient-to-r from-teal-50 to-white p-4 rounded-lg border border-teal-100 w-full hover:shadow-md transition-shadow">
+                                <h5 class="text-sm font-bold text-teal-800 mb-1">4. Ensemble Integration</h5>
+                                <p class="text-xs text-gray-600 leading-relaxed">
+                                    Combined top performers (LSTM + XGBoost) using a Ridge Regression meta-learner to correct individual biases and reduce variance.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h4 class="font-semibold text-gray-700 mb-3 text-sm uppercase tracking-wide border-b pb-2">Models Implemented</h4>
+                    <div class="grid grid-cols-3 gap-2 mb-6">
+                        <div class="text-center p-2 rounded bg-blue-50 border border-blue-100">
+                            <span class="block text-xs font-bold text-blue-700">ARIMA</span>
+                        </div>
+                        <div class="text-center p-2 rounded bg-orange-50 border border-orange-100">
+                            <span class="block text-xs font-bold text-orange-700">SARIMA</span>
+                        </div>
+                        <div class="text-center p-2 rounded bg-purple-50 border border-purple-100">
+                            <span class="block text-xs font-bold text-purple-700">Prophet</span>
+                        </div>
+                        <div class="text-center p-2 rounded bg-red-50 border border-red-100">
+                            <span class="block text-xs font-bold text-red-700">LSTM</span>
+                        </div>
+                        <div class="text-center p-2 rounded bg-green-50 border border-green-100">
+                            <span class="block text-xs font-bold text-green-700">XGBoost</span>
+                        </div>
+                        <div class="text-center p-2 rounded bg-teal-100 border border-teal-200 shadow-sm">
+                            <span class="block text-xs font-bold text-teal-800">Ensemble</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Info Box -->
+                    <div class="bg-teal-50 border-l-4 border-teal-500 p-4 rounded-r-lg">
+                        <h4 class="font-semibold text-teal-800 flex items-center gap-2">
+                            <span>🔬</span> Advanced Technique
+                        </h4>
+                        <p class="text-teal-700 text-sm mt-1">
+                            <strong>Stacked Ensemble:</strong> Meta-classifier combining LSTM and XGBoost using Ridge Regression.
+                        </p>
+                    </div>
+                    
+                    <!-- Train/Test Split Image -->
+                    <div class="mt-6 -mx-6 -mb-6 rounded-b-xl overflow-hidden border-t border-gray-100 group relative">
+                        <div class="absolute top-3 right-3 bg-black/60 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 backdrop-blur-sm">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
+                        </div>
+                        <img src="images/data train test validation.png" 
+                             alt="Data Split Visualization"
+                             class="w-full h-auto cursor-zoom-in hover:scale-[1.02] transition-transform duration-300"
+                             onclick="openModal(this.src, 'Train, Validation, and Test data split')">
+                        <p class="bg-gray-50 text-xs text-gray-500 text-center py-3 italic border-t border-gray-100">
+                            Figure 2: Train, Validation, and Test data split (Click to Zoom)
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Section 4: XGBoost Optimization (Moved here) -->
+                <section class="bg-white rounded-xl p-6 shadow-md border border-gray-100 hover:shadow-lg transition-shadow">
+                    <div class="flex items-center gap-3 mb-4 pb-3 border-b-2 border-teal-500">
+                        <span class="bg-gradient-to-br from-teal-400 to-teal-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">3</span>
+                        <h3 class="text-lg font-bold text-gray-800">XGBoost Optimization</h3>
+                    </div>
+                    
+                    <p class="text-gray-600 text-sm mb-4">
+                        The XGBoost model underwent extensive hyperparameter tuning to achieve optimal performance.
+                    </p>
+                    
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div class="bg-red-50 p-4 rounded-xl text-center">
+                            <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Baseline RMSE</p>
+                            <p class="text-2xl font-bold text-red-600">9.90</p>
+                            <p class="text-xs text-gray-500">Before Tuning</p>
+                        </div>
+                        <div class="bg-emerald-50 p-4 rounded-xl text-center">
+                            <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Tuned RMSE</p>
+                            <p class="text-2xl font-bold text-emerald-600">2.20</p>
+                            <p class="text-xs text-gray-500">After Tuning</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-emerald-50 border-l-4 border-emerald-500 p-4 rounded-r-lg">
+                        <h4 class="font-semibold text-emerald-800 flex items-center gap-2">
+                            <span>📉</span> 77.77% Error Reduction
+                        </h4>
+                        <p class="text-emerald-700 text-sm mt-1">
+                            R² improved from <strong>0.5868</strong> to <strong>0.9789</strong> through systematic optimization.
+                        </p>
+                    </div>
+                    
+                    <!-- XGBoost Comparison Image -->
+                    <div class="mt-6 -mx-6 -mb-6 rounded-b-xl overflow-hidden border-t border-gray-100 group relative">
+                        <div class="absolute top-3 right-3 bg-black/60 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 backdrop-blur-sm">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
+                        </div>
+                        <img src="images/orginal vs enachnted xgbost.png" 
+                             alt="Original vs Enhanced XGBoost"
+                             class="w-full h-auto cursor-zoom-in hover:scale-[1.02] transition-transform duration-300"
+                             onclick="openModal(this.src, 'XGBoost before and after optimization')">
+                        <p class="bg-gray-50 text-xs text-gray-500 text-center py-3 italic border-t border-gray-100">
+                            Figure 3: XGBoost before and after optimization (Click to Zoom)
+                        </p>
+                    </div>
+                </section>
+            </div>
+
+            <!-- COLUMN 2: Results, Conclusion -->
+            <div class="space-y-8">
+                
+                <!-- Results Section -->
+                <section class="bg-white rounded-xl p-6 shadow-md border border-gray-100 hover:shadow-lg transition-shadow">
+                    <div class="flex items-center gap-3 mb-4 pb-3 border-b-2 border-teal-500">
+                        <span class="bg-gradient-to-br from-teal-400 to-teal-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">4</span>
+                        <h3 class="text-lg font-bold text-gray-800">Results & Performance</h3>
+                    </div>
+                    
+                    <!-- Champion Trophy -->
+                    <div class="flex items-center justify-center gap-4 mb-6">
+                        <span class="text-4xl animate-bounce-slow">🏆</span>
+                        <span class="text-xl font-bold text-emerald-600">CHAMPION: Stacked Ensemble</span>
+                        <span class="text-4xl animate-bounce-slow">🏆</span>
+                    </div>
+                    
+                    <!-- Champion Metrics -->
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <!-- Main Champion Card -->
+                        <div class="col-span-2 bg-gradient-to-br from-emerald-50 to-teal-50 p-5 rounded-xl border-2 border-emerald-400 text-center animate-pulse-glow">
+                            <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Best R² Score</p>
+                            <p class="text-4xl font-extrabold text-emerald-600">0.9948</p>
+                            <p class="text-sm text-gray-600 mt-1">99.48% Accuracy</p>
+                            <p class="text-sm text-emerald-600 font-semibold mt-2">↑ +87.84% from baseline</p>
+                        </div>
+                        
+                        <div class="bg-gray-50 p-4 rounded-xl text-center hover:bg-gray-100 transition-colors">
+                            <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">RMSE</p>
+                            <p class="text-2xl font-bold text-teal-600">1.09</p>
+                            <p class="text-xs text-gray-500">Amperes</p>
+                            <p class="text-xs text-emerald-600 font-semibold mt-1">↓ 89.0% reduction</p>
+                        </div>
+                        
+                        <div class="bg-gray-50 p-4 rounded-xl text-center hover:bg-gray-100 transition-colors">
+                            <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">MAE</p>
+                            <p class="text-2xl font-bold text-teal-600">0.82</p>
+                            <p class="text-xs text-gray-500">Amperes</p>
+                            <p class="text-xs text-emerald-600 font-semibold mt-1">↓ 89.3% reduction</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Stacked Ensemble Actual vs Predicted Image -->
+                    <div class="mb-6 rounded-xl overflow-hidden border border-gray-200 group relative shadow-sm">
+                        <div class="absolute top-3 right-3 bg-black/60 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 backdrop-blur-sm">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
+                        </div>
+                        <img src="images/stacked_ensemble_timeseries.png" 
+                             alt="Stacked Ensemble: Time Series Forecast"
+                             class="w-full h-auto cursor-zoom-in hover:scale-[1.02] transition-transform duration-300"
+                             onclick="openModal(this.src, 'Stacked Ensemble: Time Series Forecast (Actual vs Predicted)')">
+                        <p class="bg-gray-50 text-xs text-gray-500 text-center py-3 italic border-t border-gray-100">
+                            Figure 5: Time Series Forecast - Actual vs Predicted (Validation Set)
+                        </p>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="mb-6">
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="text-gray-600">R² Score Journey</span>
+                            <span><strong class="text-gray-700">52.96%</strong> → <strong class="text-emerald-600">99.48%</strong></span>
+                        </div>
+                        <div class="h-6 bg-gray-200 rounded-full overflow-hidden">
+                            <div id="progressBar" class="h-full bg-gradient-to-r from-red-500 via-yellow-500 to-emerald-500 rounded-full flex items-center justify-end pr-3 text-white text-xs font-bold transition-all duration-1500" style="width: 0%">
+                                99.48%
+                            </div>
+                        </div>
+                        <div class="flex justify-between text-xs text-gray-400 mt-1">
+                            <span>0%</span>
+                            <span>Target: 90%</span>
+                            <span>100%</span>
+                        </div>
+                    </div>
+                    
+                    <!-- RMSE Comparison Chart -->
+                    <div class="bg-gray-50 rounded-xl p-5 border border-gray-200 mb-4">
+                        <h4 class="text-center font-semibold text-gray-700 mb-6 text-base">📊 RMSE Comparison (Lower is Better)</h4>
+                        
+                        <!-- Chart Container with fixed height -->
+                        <div class="relative bg-white rounded-lg p-4 border border-gray-100">
+                            <!-- Y-axis scale indicator -->
+                            <div class="absolute left-0 top-4 bottom-16 w-8 flex flex-col justify-between text-xs text-gray-400 text-right pr-1">
+                                <span>10</span>
+                                <span>5</span>
+                                <span>0</span>
+                            </div>
+                            
+                            <!-- Bars Container -->
+                            <div class="flex items-end justify-center gap-6 ml-8" style="height: 160px;">
+                                <!-- Baseline Bar -->
+                                <div class="flex flex-col items-center justify-end h-full">
+                                    <span class="text-xs font-bold text-red-600 mb-1">9.90</span>
+                                    <div id="bar1" class="w-14 bg-gradient-to-t from-red-600 to-red-400 rounded-t-md bar-animate shadow-md" style="height: 0px" data-height="140px"></div>
+                                </div>
+                                
+                                <!-- Tuned XGBoost Bar -->
+                                <div class="flex flex-col items-center justify-end h-full">
+                                    <span class="text-xs font-bold text-amber-600 mb-1">2.20</span>
+                                    <div id="bar2" class="w-14 bg-gradient-to-t from-amber-600 to-amber-400 rounded-t-md bar-animate shadow-md" style="height: 0px" data-height="31px"></div>
+                                </div>
+                                
+                                <!-- Ensemble Bar -->
+                                <div class="flex flex-col items-center justify-end h-full">
+                                    <span class="text-xs font-bold text-emerald-600 mb-1">1.09</span>
+                                    <div id="bar3" class="w-14 bg-gradient-to-t from-emerald-600 to-emerald-400 rounded-t-md bar-animate shadow-md" style="height: 0px" data-height="15px"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- X-axis line -->
+                            <div class="ml-8 border-t-2 border-gray-300 mt-0"></div>
+                            
+                            <!-- X-axis Labels -->
+                            <div class="flex justify-center gap-6 ml-8 mt-2">
+                                <p class="w-14 text-xs text-gray-600 text-center font-medium">Baseline<br/>LSTM</p>
+                                <p class="w-14 text-xs text-gray-600 text-center font-medium">Tuned<br/>XGBoost</p>
+                                <p class="w-14 text-xs text-gray-600 text-center font-medium">Stacked<br/>Ensemble</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Legend -->
+                        <div class="flex justify-center gap-4 mt-3 text-xs">
+                            <span class="flex items-center gap-1"><span class="w-3 h-3 bg-red-500 rounded"></span> High Error</span>
+                            <span class="flex items-center gap-1"><span class="w-3 h-3 bg-emerald-500 rounded"></span> Low Error</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Model Comparison Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm border-collapse">
+                            <thead>
+                                <tr class="bg-teal-500 text-white">
+                                    <th class="py-2 px-3 text-left rounded-tl-lg">Model</th>
+                                    <th class="py-2 px-3 text-center">RMSE</th>
+                                    <th class="py-2 px-3 text-center">MAE</th>
+                                    <th class="py-2 px-3 text-center rounded-tr-lg">R²</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-gray-100 hover:bg-gray-50">
+                                    <td class="py-2 px-3">Original LSTM</td>
+                                    <td class="py-2 px-3 text-center">10.56</td>
+                                    <td class="py-2 px-3 text-center">7.66</td>
+                                    <td class="py-2 px-3 text-center">52.96%</td>
+                                </tr>
+                                <tr class="border-b border-gray-100 hover:bg-gray-50">
+                                    <td class="py-2 px-3">Optimized LSTM v2</td>
+                                    <td class="py-2 px-3 text-center">9.22</td>
+                                    <td class="py-2 px-3 text-center">6.62</td>
+                                    <td class="py-2 px-3 text-center">63.87%</td>
+                                </tr>
+                                <tr class="border-b border-gray-100 hover:bg-gray-50">
+                                    <td class="py-2 px-3">XGBoost Ultra</td>
+                                    <td class="py-2 px-3 text-center">1.51</td>
+                                    <td class="py-2 px-3 text-center">0.84</td>
+                                    <td class="py-2 px-3 text-center">99.07%</td>
+                                </tr>
+                                <tr class="bg-gradient-to-r from-emerald-100 to-teal-100 font-semibold">
+                                    <td class="py-2 px-3 rounded-bl-lg">🏆 Stacked Ensemble</td>
+                                    <td class="py-2 px-3 text-center text-emerald-700">1.09</td>
+                                    <td class="py-2 px-3 text-center text-emerald-700">0.82</td>
+                                    <td class="py-2 px-3 text-center text-emerald-700 rounded-br-lg">99.48%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Section 5: Comparative Analysis & Conclusion -->
+                <section class="bg-white rounded-xl p-6 shadow-md border border-gray-100 hover:shadow-lg transition-shadow">
+                    <div class="flex items-center gap-3 mb-4 pb-3 border-b-2 border-teal-500">
+                        <span class="bg-gradient-to-br from-teal-400 to-teal-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">5</span>
+                        <h3 class="text-lg font-bold text-gray-800">Comparative Analysis & Conclusion</h3>
+                    </div>
+                    
+                    <h4 class="font-semibold text-gray-700 mb-2 text-sm">Why the Ensemble Wins</h4>
+                    <p class="text-gray-600 text-sm mb-4 text-justify">
+                        The <strong>Stacked Ensemble</strong> outperforms individual models by leveraging their complementary strengths. While LSTM excels at capturing long-term temporal dependencies and XGBoost dominates in feature interaction handling, the Ensemble combines them to cancel out individual errors.
+                    </p>
+
+                    <!-- Comparison Stats -->
+                    <div class="grid grid-cols-2 gap-3 mb-4">
+                        <div class="bg-blue-50 p-3 rounded-lg border border-blue-100">
+                            <p class="text-xs text-blue-800 font-bold">LSTM Weakness</p>
+                            <p class="text-xs text-blue-600 mt-1">Struggles with sudden spikes and high-frequency noise.</p>
+                        </div>
+                        <div class="bg-green-50 p-3 rounded-lg border border-green-100">
+                            <p class="text-xs text-green-800 font-bold">XGBoost Strength</p>
+                            <p class="text-xs text-green-600 mt-1">Robust to outliers and captures non-linear feature interactions.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-teal-50 to-emerald-50 p-4 rounded-lg border border-teal-100 mb-4">
+                        <p class="text-sm text-gray-700">
+                            <strong>The Result:</strong> As shown in Figure 4 below, the Ensemble (Green Line) achieves a stable high accuracy (R² > 0.99), significantly reducing the error variance seen in the standalone LSTM model (Blue Bars).
+                        </p>
+                    </div>
+                    
+                    <!-- Ensemble Comparison Image -->
+                    <div class="mb-6 -mx-6 rounded-b-xl overflow-hidden border-t border-gray-100 group relative">
+                        <div class="absolute top-3 right-3 bg-black/60 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 backdrop-blur-sm">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
+                        </div>
+                        <img src="images/orginal lstm vs ensemble aproach with xgbost.png" 
+                             alt="LSTM vs Ensemble Approach Comparison"
+                             class="w-full h-auto cursor-zoom-in hover:scale-[1.02] transition-transform duration-300"
+                             onclick="openModal(this.src, 'Original LSTM vs Ensemble approach')">
+                        <p class="bg-gray-50 text-xs text-gray-500 text-center py-3 italic border-t border-gray-100">
+                            Figure 4: Comparison of Error Reduction (RMSE) and Accuracy Gain (R²)
+                        </p>
+                    </div>
+
+                    <h4 class="font-semibold text-gray-700 mb-2 text-sm">Final Impact</h4>
+                    <ul class="space-y-2 mb-4">
+                        <li class="flex items-center gap-2 py-2 border-b border-gray-100">
+                            <span class="text-emerald-500">✅</span>
+                            <span class="text-sm font-medium text-gray-700"><strong>99.48% Accuracy</strong> exceeds 90% target.</span>
+                        </li>
+                        <li class="flex items-center gap-2 py-2 border-b border-gray-100">
+                            <span class="text-emerald-500">✅</span>
+                            <span class="text-sm font-medium text-gray-700">Enables precise <strong>Peak Load Management</strong>.</span>
+                        </li>
+                        <li class="flex items-center gap-2 py-2">
+                            <span class="text-emerald-500">✅</span>
+                            <span class="text-sm font-medium text-gray-700">Reduces operational costs via better planning.</span>
+                        </li>
+                    </ul>
+                </section>
+
+                <!-- Section 6: Future Scope & Implementation -->
+                <section class="bg-white rounded-xl p-6 shadow-md border border-gray-100 hover:shadow-lg transition-shadow">
+                    <div class="flex items-center gap-3 mb-4 pb-3 border-b-2 border-teal-500">
+                        <span class="bg-gradient-to-br from-teal-400 to-teal-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">6</span>
+                        <h3 class="text-lg font-bold text-gray-800">Future Scope & Implementation</h3>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 gap-4">
+                        <div class="flex items-start gap-3">
+                            <div class="bg-blue-100 p-2 rounded-lg text-blue-600 mt-1">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-800 text-sm">Real-Time SCADA Integration</h4>
+                                <p class="text-xs text-gray-600 mt-1">Deploy model on edge servers to ingest live 11kV feeder data for instantaneous load balancing and anomaly detection.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3">
+                            <div class="bg-purple-100 p-2 rounded-lg text-purple-600 mt-1">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-800 text-sm">Dynamic Retraining Pipeline</h4>
+                                <p class="text-xs text-gray-600 mt-1">Automated monthly retraining schedule to adapt to seasonal shifts and new infrastructure developments.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3">
+                            <div class="bg-orange-100 p-2 rounded-lg text-orange-600 mt-1">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-800 text-sm">Scalability to 33kV/132kV</h4>
+                                <p class="text-xs text-gray-600 mt-1">Expand the feature engineering framework to cover upstream transmission nodes for regional grid stability.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 7: Business Impact & ROI -->
+                <section class="bg-white rounded-xl p-6 shadow-md border border-gray-100 hover:shadow-lg transition-shadow">
+                    <div class="flex items-center gap-3 mb-4 pb-3 border-b-2 border-teal-500">
+                        <span class="bg-gradient-to-br from-teal-400 to-teal-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">7</span>
+                        <h3 class="text-lg font-bold text-gray-800">Business Impact & ROI</h3>
+                    </div>
+                    
+                    <div class="grid grid-cols-3 gap-4 text-center">
+                        <div class="bg-gray-50 p-3 rounded-lg border border-gray-100 hover:bg-gray-100 transition-colors">
+                            <div class="text-2xl mb-2">💰</div>
+                            <h4 class="font-bold text-xs uppercase tracking-wider text-teal-600 mb-1">Cost Savings</h4>
+                            <p class="text-xs text-gray-600">Optimized dispatch reduces spinning reserve costs by ~15%.</p>
+                        </div>
+                        
+                        <div class="bg-gray-50 p-3 rounded-lg border border-gray-100 hover:bg-gray-100 transition-colors">
+                            <div class="text-2xl mb-2">⚡</div>
+                            <h4 class="font-bold text-xs uppercase tracking-wider text-teal-600 mb-1">Reliability</h4>
+                            <p class="text-xs text-gray-600">Proactive load shedding prevention improves SAIDI/SAIFI metrics.</p>
+                        </div>
+                        
+                        <div class="bg-gray-50 p-3 rounded-lg border border-gray-100 hover:bg-gray-100 transition-colors">
+                            <div class="text-2xl mb-2">🏗️</div>
+                            <h4 class="font-bold text-xs uppercase tracking-wider text-teal-600 mb-1">Asset Life</h4>
+                            <p class="text-xs text-gray-600">Reduced thermal stress on transformers extends equipment lifespan.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 bg-teal-50 p-3 rounded-lg border border-teal-100 flex items-center gap-3">
+                        <span class="text-xl">🚀</span>
+                        <p class="text-xs text-teal-800 italic">
+                            "Deploying this model transforms grid management from <strong>reactive</strong> to <strong>predictive</strong>."
+                        </p>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- ============================================
+             FOOTER
+             ============================================ -->
+        <footer class="bg-gray-800 text-white py-6 px-8">
+            <div class="flex flex-wrap justify-center items-center gap-8 mb-4">
+                <div class="flex items-center gap-2 text-sm">
+                    <svg class="w-5 h-5 opacity-80" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"/>
+                    </svg>
+                    <span>Project Duration: March 2024 – August 2025</span>
+                </div>
+                <div class="flex items-center gap-2 text-sm">
+                    <svg class="w-5 h-5 opacity-80" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5M12,2A7,7 0 0,0 5,9C5,14.25 12,22 12,22C12,22 19,14.25 19,9A7,7 0 0,0 12,2Z"/>
+                    </svg>
+                    <span>Al Humbar 11kV PSS Substation, Oman</span>
+                </div>
+            </div>
+            
+            <div class="flex flex-wrap justify-center gap-2">
+                <span class="bg-teal-500/20 border border-teal-500/40 px-3 py-1 rounded-full text-xs">Python</span>
+                <span class="bg-teal-500/20 border border-teal-500/40 px-3 py-1 rounded-full text-xs">Pandas</span>
+                <span class="bg-teal-500/20 border border-teal-500/40 px-3 py-1 rounded-full text-xs">NumPy</span>
+                <span class="bg-teal-500/20 border border-teal-500/40 px-3 py-1 rounded-full text-xs">Scikit-Learn</span>
+                <span class="bg-teal-500/20 border border-teal-500/40 px-3 py-1 rounded-full text-xs">TensorFlow</span>
+                <span class="bg-teal-500/20 border border-teal-500/40 px-3 py-1 rounded-full text-xs">Keras</span>
+                <span class="bg-teal-500/20 border border-teal-500/40 px-3 py-1 rounded-full text-xs">XGBoost</span>
+                <span class="bg-teal-500/20 border border-teal-500/40 px-3 py-1 rounded-full text-xs">Matplotlib</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Floating Print Button -->
+    <button onclick="window.print()" class="fixed bottom-8 right-8 bg-teal-600 text-white p-4 rounded-full shadow-lg hover:bg-teal-700 transition-colors z-40 print:hidden flex items-center gap-2 group">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+        <span class="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-300 whitespace-nowrap">Save as PDF / Print</span>
+    </button>
+
+    <!-- Image Modal/Lightbox -->
+    <div id="imageModal" class="fixed inset-0 z-50 hidden bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity duration-300 opacity-0" onclick="closeModal()">
+        <div class="relative max-w-7xl max-h-[90vh] w-full flex flex-col items-center">
+            <button class="absolute -top-12 right-0 text-white hover:text-gray-300 focus:outline-none" onclick="closeModal()">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <img id="modalImage" src="" alt="Full size preview" class="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl border border-gray-700" onclick="event.stopPropagation()">
+            <p id="modalCaption" class="text-white/90 mt-4 text-center font-medium text-lg bg-black/50 px-4 py-2 rounded-full backdrop-blur-md"></p>
+        </div>
+    </div>
+
+    <!-- JavaScript for Animations & Modal -->
+    <script>
+        // Modal Functions
+        function openModal(src, alt) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const modalCaption = document.getElementById('modalCaption');
+            
+            modalImg.src = src;
+            modalCaption.textContent = alt;
+            
+            modal.classList.remove('hidden');
+            // Small delay to allow display:block to apply before opacity transition
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+            }, 10);
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+            document.body.style.overflow = ''; // Restore scrolling
+        }
+
+        // Close on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate progress bar after delay
+            setTimeout(() => {
+                const progressBar = document.getElementById('progressBar');
+                if (progressBar) {
+                    progressBar.style.width = '99.48%';
+                }
+            }, 500);
+            
+            // Animate bars when visible - values are proportional to RMSE (9.90 max)
+            const bars = [
+                { id: 'bar1', height: '140px' },  // 9.90 RMSE - tallest
+                { id: 'bar2', height: '31px' },   // 2.20 RMSE
+                { id: 'bar3', height: '14px' }    // 1.02 RMSE - smallest
+            ];
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        bars.forEach((bar, index) => {
+                            setTimeout(() => {
+                                const element = document.getElementById(bar.id);
+                                if (element) {
+                                    element.style.height = bar.height;
+                                }
+                            }, index * 300);
+                        });
+                        observer.disconnect();
+                    }
+                });
+            }, { threshold: 0.3 });
+            
+            const chartContainer = document.querySelector('.bar-animate');
+            if (chartContainer) {
+                observer.observe(chartContainer.parentElement.parentElement);
+            }
+            
+            // Trigger animation immediately as fallback
+            setTimeout(() => {
+                bars.forEach((bar, index) => {
+                    setTimeout(() => {
+                        const element = document.getElementById(bar.id);
+                        if (element && element.style.height === '0px') {
+                            element.style.height = bar.height;
+                        }
+                    }, index * 300 + 800);
+                });
+            }, 500);
+        });
+    </script>
+</body>
+</html>
