@@ -70,12 +70,12 @@
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen">
-    <div class="poster-container w-full max-w-[98%] mx-auto bg-white shadow-2xl border-t-8 border-teal-600">
+    <div class="poster-container w-full md:max-w-[98%] mx-auto bg-white shadow-2xl border-t-4 md:border-t-8 border-teal-600">
         
         <!-- ============================================
              HEADER SECTION
              ============================================ -->
-        <header class="gradient-header text-white py-10 px-8 text-center relative overflow-hidden">
+        <header class="gradient-header text-white py-6 px-4 md:py-10 md:px-8 text-center relative overflow-hidden">
             <!-- Background Pattern -->
             <div class="absolute inset-0 opacity-10">
                 <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
@@ -90,16 +90,16 @@
             
             <div class="relative z-10">
                 <!-- Icon -->
-                <div class="w-20 h-20 mx-auto mb-4 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                    <svg class="w-12 h-12" viewBox="0 0 24 24" fill="white">
+                <div class="w-16 h-16 md:w-20 md:h-20 mx-auto mb-4 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                    <svg class="w-10 h-10 md:w-12 md:h-12" viewBox="0 0 24 24" fill="white">
                         <path d="M13 2.05v2.02c3.95.49 7 3.85 7 7.93 0 3.21-1.92 6-4.72 7.28L13 17v5h7v-2h-4.18c2.01-1.59 3.18-4.06 3.18-6.72 0-4.87-3.65-8.93-8.5-9.73V2.05M11 2.05C6.58 2.58 3.07 6.13 2.54 10.5H.53c.54-5.22 4.75-9.37 10.01-9.45v1.99m0 17.9v2c-5.26-.08-9.47-4.23-10.01-9.45H2.54c.53 4.37 4.04 7.92 8.46 8.45M11 17l-2.28 2.28C6.55 18 5 15.69 5 13c0-3.86 3.14-7 7-7v4l4-4-4-4v2c-4.42 0-8 3.58-8 8 0 2.92 1.56 5.47 3.9 6.87L11 17z"/>
                     </svg>
                 </div>
                 
-                <h1 class="text-4xl font-extrabold mb-2 drop-shadow-lg tracking-tight">
+                <h1 class="text-2xl md:text-4xl font-extrabold mb-2 drop-shadow-lg tracking-tight">
                     Load Forecasting for 11/33kV Substation
                 </h1>
-                <h2 class="text-xl font-normal opacity-95 mb-6">
+                <h2 class="text-lg md:text-xl font-normal opacity-95 mb-6">
                     Using XGBoost & Ensemble Learning Methods
                 </h2>
                 
@@ -128,10 +128,10 @@
         <!-- ============================================
              MAIN CONTENT - 2 COLUMN GRID (Wider Images)
              ============================================ -->
-        <main class="grid grid-cols-1 lg:grid-cols-2 gap-8 p-8 bg-gray-100">
+        <main class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8 p-4 md:p-8 bg-gray-100">
             
             <!-- COLUMN 1: Introduction, Methodology, XGBoost -->
-            <div class="space-y-8">
+            <div class="space-y-4 md:space-y-8">
                 
                 <!-- Section 1: Introduction & Problem -->
                 <section class="bg-white rounded-xl p-6 shadow-md border border-gray-100 hover:shadow-lg transition-shadow">
@@ -342,7 +342,7 @@
             </div>
 
             <!-- COLUMN 2: Results, Conclusion -->
-            <div class="space-y-8">
+            <div class="space-y-4 md:space-y-8">
                 
                 <!-- Results Section -->
                 <section class="bg-white rounded-xl p-6 shadow-md border border-gray-100 hover:shadow-lg transition-shadow">
@@ -429,7 +429,7 @@
                             </div>
                             
                             <!-- Bars Container -->
-                            <div class="flex items-end justify-center gap-6 ml-8" style="height: 160px;">
+                            <div class="flex items-end justify-center gap-3 md:gap-6 ml-8" style="height: 160px;">
                                 <!-- Baseline Bar -->
                                 <div class="flex flex-col items-center justify-end h-full">
                                     <span class="text-xs font-bold text-red-600 mb-1">9.90</span>
@@ -453,7 +453,7 @@
                             <div class="ml-8 border-t-2 border-gray-300 mt-0"></div>
                             
                             <!-- X-axis Labels -->
-                            <div class="flex justify-center gap-6 ml-8 mt-2">
+                            <div class="flex justify-center gap-3 md:gap-6 ml-8 mt-2">
                                 <p class="w-14 text-xs text-gray-600 text-center font-medium">Baseline<br/>LSTM</p>
                                 <p class="w-14 text-xs text-gray-600 text-center font-medium">Tuned<br/>XGBoost</p>
                                 <p class="w-14 text-xs text-gray-600 text-center font-medium">Stacked<br/>Ensemble</p>
@@ -649,13 +649,13 @@
         <!-- ============================================
              FOOTER
              ============================================ -->
-        <footer class="bg-gray-800 text-white py-6 px-8">
-            <div class="flex flex-wrap justify-center items-center gap-8 mb-4">
+        <footer class="bg-gray-800 text-white py-6 px-4 md:px-8">
+            <div class="flex flex-col md:flex-row flex-wrap justify-center items-center gap-4 md:gap-8 mb-4">
                 <div class="flex items-center gap-2 text-sm">
                     <svg class="w-5 h-5 opacity-80" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"/>
                     </svg>
-                    <span>Project Duration: March 2024 – August 2025</span>
+                    <span>Project Duration: March 2024 – August 2024</span>
                 </div>
                 <div class="flex items-center gap-2 text-sm">
                     <svg class="w-5 h-5 opacity-80" viewBox="0 0 24 24" fill="currentColor">
@@ -679,9 +679,9 @@
     </div>
 
     <!-- Floating Print Button -->
-    <button onclick="window.print()" class="fixed bottom-8 right-8 bg-teal-600 text-white p-4 rounded-full shadow-lg hover:bg-teal-700 transition-colors z-40 print:hidden flex items-center gap-2 group">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-        <span class="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-300 whitespace-nowrap">Save as PDF / Print</span>
+    <button onclick="window.print()" class="fixed bottom-4 right-4 md:bottom-8 md:right-8 bg-teal-600 text-white p-3 md:p-4 rounded-full shadow-lg hover:bg-teal-700 transition-colors z-40 print:hidden flex items-center gap-2 group">
+        <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+        <span class="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-300 whitespace-nowrap text-sm md:text-base">Save as PDF / Print</span>
     </button>
 
     <!-- Image Modal/Lightbox -->
