@@ -175,7 +175,22 @@ async def save_poster_highres():
         
         dimensions_wide = await page_wide_measure.evaluate("""
             () => {
+                // Remove all margins/spacing
+                document.body.style.margin = '0';
+                document.body.style.padding = '0';
+                document.body.style.background = 'white';
+                document.documentElement.style.margin = '0';
+                document.documentElement.style.padding = '0';
+                
                 const container = document.querySelector('.poster-container');
+                if (container) {
+                    container.style.maxWidth = '100%';
+                    container.style.width = '100%';
+                    container.style.margin = '0';
+                    container.style.boxShadow = 'none';
+                    container.style.border = 'none';
+                }
+                
                 const rect = container.getBoundingClientRect();
                 return {
                     width: Math.ceil(rect.width),
