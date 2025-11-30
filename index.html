@@ -232,6 +232,17 @@
                 <p class="text-base font-semibold mt-3 pt-3 border-t border-white/30 inline-block px-6">
                     University of Technology and Applied Sciences
                 </p>
+                
+                <!-- Presentation Button -->
+                <div class="flex justify-center mt-4">
+                    <button onclick="startPresentation()" class="group bg-white/20 hover:bg-white/30 backdrop-blur-sm px-6 py-3 rounded-full text-sm font-semibold border border-white/30 transition-all flex items-center gap-3 hover:scale-105 hover:shadow-lg hover:shadow-white/20">
+                        <span class="relative flex items-center justify-center w-8 h-8 bg-white/20 rounded-full group-hover:bg-white/30 transition-all">
+                            <svg class="w-4 h-4 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </span>
+                        Start Presentation
+                        <span class="text-xs opacity-70">(Press P)</span>
+                    </button>
+                </div>
             </div>
         </header>
 
@@ -769,6 +780,78 @@
         </main>
 
         <!-- ============================================
+             LIMITATIONS SECTION
+             ============================================ -->
+        <section class="mx-4 md:mx-8 mb-8 bg-white rounded-xl p-6 shadow-md border border-gray-100">
+            <div class="flex items-center gap-3 mb-4 pb-3 border-b-2 border-amber-500">
+                <span class="bg-gradient-to-br from-amber-400 to-amber-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">⚠️</span>
+                <h3 class="text-lg font-bold text-gray-800">Limitations & Constraints</h3>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Limitation 1 -->
+                <div class="bg-amber-50 p-4 rounded-lg border border-amber-100">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-amber-600">📊</span>
+                        <h4 class="font-semibold text-amber-800 text-sm">Data Scope</h4>
+                    </div>
+                    <p class="text-xs text-gray-600">Model trained on data from a single 33kV/11kV substation. Performance may vary when applied to substations with different load profiles or geographical conditions.</p>
+                </div>
+                
+                <!-- Limitation 2 -->
+                <div class="bg-amber-50 p-4 rounded-lg border border-amber-100">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-amber-600">🕐</span>
+                        <h4 class="font-semibold text-amber-800 text-sm">Temporal Coverage</h4>
+                    </div>
+                    <p class="text-xs text-gray-600">Historical data spans limited time period. Long-term seasonal patterns and rare extreme events may not be fully captured in the training dataset.</p>
+                </div>
+                
+                <!-- Limitation 3 -->
+                <div class="bg-amber-50 p-4 rounded-lg border border-amber-100">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-amber-600">🌤️</span>
+                        <h4 class="font-semibold text-amber-800 text-sm">Weather Variables</h4>
+                    </div>
+                    <p class="text-xs text-gray-600">Only temperature and humidity included. Additional factors like wind speed, solar radiation, and precipitation could improve accuracy.</p>
+                </div>
+                
+                <!-- Limitation 4 -->
+                <div class="bg-amber-50 p-4 rounded-lg border border-amber-100">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-amber-600">🔄</span>
+                        <h4 class="font-semibold text-amber-800 text-sm">Model Drift</h4>
+                    </div>
+                    <p class="text-xs text-gray-600">Static model requires periodic retraining to adapt to changing consumption patterns, new infrastructure, and demographic shifts.</p>
+                </div>
+                
+                <!-- Limitation 5 -->
+                <div class="bg-amber-50 p-4 rounded-lg border border-amber-100">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-amber-600">⚡</span>
+                        <h4 class="font-semibold text-amber-800 text-sm">External Events</h4>
+                    </div>
+                    <p class="text-xs text-gray-600">Unpredictable events (holidays, emergencies, large-scale outages) are not explicitly modeled and may cause temporary accuracy degradation.</p>
+                </div>
+                
+                <!-- Limitation 6 -->
+                <div class="bg-amber-50 p-4 rounded-lg border border-amber-100">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-amber-600">💻</span>
+                        <h4 class="font-semibold text-amber-800 text-sm">Computational Resources</h4>
+                    </div>
+                    <p class="text-xs text-gray-600">Ensemble model requires more computational resources than single models. Real-time deployment needs adequate infrastructure for low-latency predictions.</p>
+                </div>
+            </div>
+            
+            <div class="mt-4 bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
+                <p class="text-sm text-blue-800">
+                    <strong>Note:</strong> These limitations represent opportunities for future research and model enhancement rather than fundamental flaws in the methodology.
+                </p>
+            </div>
+        </section>
+
+        <!-- ============================================
              FOOTER
              ============================================ -->
         <footer class="bg-gray-800 text-white py-6 px-4 md:px-8">
@@ -841,8 +924,439 @@
 
         // Close on Escape key
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') closeModal();
+            if (e.key === 'Escape') {
+                closeModal();
+                exitPresentation();
+            }
         });
+
+        // Presentation Mode Functions
+        let presentationMode = false;
+        let currentSection = 0;
+        let sections = [];
+        let slideTransitioning = false;
+
+        // Add P key shortcut to start presentation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'p' || e.key === 'P') {
+                if (!presentationMode) startPresentation();
+            }
+            if (e.key === 'f' || e.key === 'F') {
+                if (presentationMode) toggleFullscreen();
+            }
+        });
+
+        function startPresentation() {
+            presentationMode = true;
+            sections = Array.from(document.querySelectorAll('main section, .poster-container > section')).filter(s => s.closest('#presentationOverlay') === null);
+            currentSection = 0;
+            
+            // Create beautiful presentation overlay
+            const overlay = document.createElement('div');
+            overlay.id = 'presentationOverlay';
+            overlay.innerHTML = `
+                <style>
+                    #presentationOverlay {
+                        position: fixed;
+                        inset: 0;
+                        z-index: 9999;
+                        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+                        display: flex;
+                        flex-direction: column;
+                        opacity: 0;
+                        transition: opacity 0.4s ease;
+                    }
+                    #presentationOverlay.active { opacity: 1; }
+                    
+                    .pres-header {
+                        background: linear-gradient(90deg, rgba(20,184,166,0.2) 0%, rgba(16,185,129,0.1) 100%);
+                        border-bottom: 1px solid rgba(255,255,255,0.1);
+                        padding: 1rem 2rem;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    }
+                    
+                    .pres-title {
+                        color: #5eead4;
+                        font-size: 1.1rem;
+                        font-weight: 600;
+                        display: flex;
+                        align-items: center;
+                        gap: 0.75rem;
+                    }
+                    
+                    .pres-title svg { width: 24px; height: 24px; }
+                    
+                    .pres-controls-top {
+                        display: flex;
+                        gap: 0.5rem;
+                    }
+                    
+                    .pres-btn {
+                        background: rgba(255,255,255,0.1);
+                        border: 1px solid rgba(255,255,255,0.2);
+                        color: white;
+                        padding: 0.5rem 1rem;
+                        border-radius: 9999px;
+                        font-size: 0.875rem;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5rem;
+                        transition: all 0.2s ease;
+                    }
+                    
+                    .pres-btn:hover {
+                        background: rgba(255,255,255,0.2);
+                        transform: translateY(-1px);
+                    }
+                    
+                    .pres-btn svg { width: 16px; height: 16px; }
+                    
+                    .pres-main {
+                        flex: 1;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        padding: 2rem;
+                        position: relative;
+                        overflow: hidden;
+                    }
+                    
+                    .pres-slide-container {
+                        position: relative;
+                        width: 100%;
+                        max-width: 1000px;
+                        max-height: calc(100vh - 180px);
+                        perspective: 1000px;
+                    }
+                    
+                    .pres-slide {
+                        background: white;
+                        border-radius: 20px;
+                        box-shadow: 0 25px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.1);
+                        overflow: hidden;
+                        transform: scale(0.95) rotateX(2deg);
+                        opacity: 0;
+                        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+                        max-height: calc(100vh - 180px);
+                        overflow-y: auto;
+                    }
+                    
+                    .pres-slide.active {
+                        transform: scale(1) rotateX(0deg);
+                        opacity: 1;
+                    }
+                    
+                    .pres-slide.exit-left {
+                        transform: translateX(-100%) scale(0.8) rotateY(15deg);
+                        opacity: 0;
+                    }
+                    
+                    .pres-slide.exit-right {
+                        transform: translateX(100%) scale(0.8) rotateY(-15deg);
+                        opacity: 0;
+                    }
+                    
+                    .pres-slide.enter-left {
+                        transform: translateX(-50%) scale(0.9);
+                        opacity: 0;
+                    }
+                    
+                    .pres-slide.enter-right {
+                        transform: translateX(50%) scale(0.9);
+                        opacity: 0;
+                    }
+                    
+                    .pres-nav-btn {
+                        position: absolute;
+                        top: 50%;
+                        transform: translateY(-50%);
+                        width: 60px;
+                        height: 60px;
+                        border-radius: 50%;
+                        background: rgba(255,255,255,0.1);
+                        backdrop-filter: blur(10px);
+                        border: 1px solid rgba(255,255,255,0.2);
+                        color: white;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        transition: all 0.3s ease;
+                        z-index: 10;
+                    }
+                    
+                    .pres-nav-btn:hover {
+                        background: rgba(20,184,166,0.4);
+                        transform: translateY(-50%) scale(1.1);
+                        box-shadow: 0 0 30px rgba(20,184,166,0.4);
+                    }
+                    
+                    .pres-nav-btn:disabled {
+                        opacity: 0.3;
+                        cursor: not-allowed;
+                    }
+                    
+                    .pres-nav-btn:disabled:hover {
+                        transform: translateY(-50%) scale(1);
+                        background: rgba(255,255,255,0.1);
+                        box-shadow: none;
+                    }
+                    
+                    .pres-nav-btn svg { width: 24px; height: 24px; }
+                    
+                    .pres-prev { left: 1rem; }
+                    .pres-next { right: 1rem; }
+                    
+                    .pres-footer {
+                        background: rgba(0,0,0,0.3);
+                        border-top: 1px solid rgba(255,255,255,0.1);
+                        padding: 1rem 2rem;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        gap: 2rem;
+                    }
+                    
+                    .pres-progress-container {
+                        flex: 1;
+                        max-width: 400px;
+                        height: 6px;
+                        background: rgba(255,255,255,0.1);
+                        border-radius: 9999px;
+                        overflow: hidden;
+                    }
+                    
+                    .pres-progress-bar {
+                        height: 100%;
+                        background: linear-gradient(90deg, #14b8a6, #10b981);
+                        border-radius: 9999px;
+                        transition: width 0.3s ease;
+                        box-shadow: 0 0 10px rgba(20,184,166,0.5);
+                    }
+                    
+                    .pres-counter {
+                        color: white;
+                        font-size: 0.875rem;
+                        font-weight: 500;
+                        min-width: 80px;
+                        text-align: center;
+                    }
+                    
+                    .pres-counter span {
+                        color: #5eead4;
+                        font-weight: 700;
+                        font-size: 1.1rem;
+                    }
+                    
+                    .pres-dots {
+                        display: flex;
+                        gap: 0.5rem;
+                    }
+                    
+                    .pres-dot {
+                        width: 10px;
+                        height: 10px;
+                        border-radius: 50%;
+                        background: rgba(255,255,255,0.2);
+                        border: none;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                    }
+                    
+                    .pres-dot:hover { background: rgba(255,255,255,0.4); }
+                    .pres-dot.active {
+                        background: #14b8a6;
+                        transform: scale(1.3);
+                        box-shadow: 0 0 10px rgba(20,184,166,0.5);
+                    }
+                    
+                    .pres-shortcuts {
+                        position: absolute;
+                        bottom: 80px;
+                        right: 2rem;
+                        color: rgba(255,255,255,0.4);
+                        font-size: 0.75rem;
+                    }
+                    
+                    .pres-shortcuts kbd {
+                        background: rgba(255,255,255,0.1);
+                        padding: 0.2rem 0.5rem;
+                        border-radius: 4px;
+                        margin: 0 0.2rem;
+                    }
+
+                    /* Slide content styling */
+                    .pres-slide section {
+                        margin: 0 !important;
+                        border-radius: 0 !important;
+                        box-shadow: none !important;
+                    }
+                </style>
+                
+                <div class="pres-header">
+                    <div class="pres-title">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                        Load Forecasting Presentation
+                    </div>
+                    <div class="pres-controls-top">
+                        <button class="pres-btn" onclick="toggleFullscreen()">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+                            Fullscreen (F)
+                        </button>
+                        <button class="pres-btn" onclick="exitPresentation()">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            Exit (Esc)
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="pres-main">
+                    <button class="pres-nav-btn pres-prev" onclick="prevSection()" id="prevBtn">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                    </button>
+                    
+                    <div class="pres-slide-container">
+                        <div class="pres-slide" id="presentationContent"></div>
+                    </div>
+                    
+                    <button class="pres-nav-btn pres-next" onclick="nextSection()" id="nextBtn">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </button>
+                    
+                    <div class="pres-shortcuts">
+                        <kbd>←</kbd> <kbd>→</kbd> Navigate &nbsp;&nbsp; <kbd>Space</kbd> Next &nbsp;&nbsp; <kbd>F</kbd> Fullscreen &nbsp;&nbsp; <kbd>Esc</kbd> Exit
+                    </div>
+                </div>
+                
+                <div class="pres-footer">
+                    <div class="pres-counter"><span id="currentSlide">1</span> / <span id="totalSlides">${sections.length}</span></div>
+                    <div class="pres-progress-container">
+                        <div class="pres-progress-bar" id="presProgress" style="width: 0%"></div>
+                    </div>
+                    <div class="pres-dots" id="presDots"></div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+            document.body.style.overflow = 'hidden';
+            
+            // Create dots
+            const dotsContainer = document.getElementById('presDots');
+            sections.forEach((_, i) => {
+                const dot = document.createElement('button');
+                dot.className = 'pres-dot' + (i === 0 ? ' active' : '');
+                dot.onclick = () => goToSection(i);
+                dotsContainer.appendChild(dot);
+            });
+            
+            // Animate in
+            requestAnimationFrame(() => {
+                overlay.classList.add('active');
+                showSection(0);
+            });
+            
+            // Add keyboard navigation
+            document.addEventListener('keydown', handlePresentationKeys);
+        }
+
+        function handlePresentationKeys(e) {
+            if (!presentationMode) return;
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSection();
+            }
+            if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prevSection();
+            }
+        }
+
+        function showSection(index, direction = 'none') {
+            if (index < 0 || index >= sections.length || slideTransitioning) return;
+            
+            const content = document.getElementById('presentationContent');
+            const currentSlide = document.getElementById('currentSlide');
+            const progress = document.getElementById('presProgress');
+            const dots = document.querySelectorAll('.pres-dot');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (direction !== 'none' && content) {
+                slideTransitioning = true;
+                const exitClass = direction === 'next' ? 'exit-left' : 'exit-right';
+                const enterClass = direction === 'next' ? 'enter-right' : 'enter-left';
+                
+                content.classList.remove('active');
+                content.classList.add(exitClass);
+                
+                setTimeout(() => {
+                    content.classList.remove(exitClass);
+                    content.classList.add(enterClass);
+                    content.innerHTML = sections[index].outerHTML;
+                    
+                    requestAnimationFrame(() => {
+                        content.classList.remove(enterClass);
+                        content.classList.add('active');
+                        slideTransitioning = false;
+                    });
+                }, 250);
+            } else if (content) {
+                content.innerHTML = sections[index].outerHTML;
+                content.classList.add('active');
+            }
+            
+            currentSection = index;
+            if (currentSlide) currentSlide.textContent = index + 1;
+            if (progress) progress.style.width = ((index + 1) / sections.length * 100) + '%';
+            
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+            
+            if (prevBtn) prevBtn.disabled = index === 0;
+            if (nextBtn) nextBtn.disabled = index === sections.length - 1;
+        }
+
+        function goToSection(index) {
+            const direction = index > currentSection ? 'next' : index < currentSection ? 'prev' : 'none';
+            showSection(index, direction);
+        }
+
+        function nextSection() {
+            if (currentSection < sections.length - 1) {
+                showSection(currentSection + 1, 'next');
+            }
+        }
+
+        function prevSection() {
+            if (currentSection > 0) {
+                showSection(currentSection - 1, 'prev');
+            }
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        function exitPresentation() {
+            presentationMode = false;
+            const overlay = document.getElementById('presentationOverlay');
+            if (overlay) {
+                overlay.classList.remove('active');
+                setTimeout(() => overlay.remove(), 400);
+            }
+            document.body.style.overflow = '';
+            document.removeEventListener('keydown', handlePresentationKeys);
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            }
+        }
 
         document.addEventListener('DOMContentLoaded', function() {
             // Animate progress bar after delay
